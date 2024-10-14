@@ -29,7 +29,7 @@ def create_vector_database():
         logger.error(f"An error occurred while creating the vector database: {e}")
         raise
 
-def main(question, url, chunking_algorithm="fix", k=2):
+def do_rag(question, url, chunking_algorithm="fix", k=2):
     # Create vector database
     db_client, huggingface_ef = create_vector_database()
     fix_chunk_collection = db_client.get_or_create_collection(
@@ -61,9 +61,21 @@ def main(question, url, chunking_algorithm="fix", k=2):
     print(f"Question: {question}")
     print(f"Response: {response}")
 
+    # Count chunks
+    chunks_count = len(docs)
+
+    return {
+        "answer": response,
+        "chunks_count": chunks_count
+    }
+
 if __name__ == "__main__":
-    main(
+    result = do_rag(
         question="Who was steve job's wife?",
         url="https://en.wikipedia.org/wiki/Steve_Jobs",
         chunking_algorithm="semantic"
     )
+    # result = do_rag(
+    #     question="What are the health benefits of physical activity?",
+    #     url="https://www.cdc.gov/physical-activity-basics/benefits/?CDC_AAref_Val=https://www.cdc.gov/physicalactivity/basics/pa-health/index.html",
+    # )
