@@ -1,5 +1,6 @@
 import os
 import logging
+import argparse
 
 from serp_api import *
 from content_preprocessor import process_documents
@@ -70,12 +71,14 @@ def do_rag(question, url, chunking_algorithm="fix", k=2):
     }
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="RAG tool for answering questions based on URL content")
+    parser.add_argument("--url", type=str, required=True, help="URL of the content to analyze")
+    parser.add_argument("--question", type=str, required=True, help="Question to answer")
+    parser.add_argument("--chunking", type=str, default="fix", choices=["fix", "semantic", "qa"], help="Chunking algorithm to use")
+    args = parser.parse_args()
+
     result = do_rag(
-        question="Who was steve job's wife?",
-        url="https://en.wikipedia.org/wiki/Steve_Jobs",
-        chunking_algorithm="semantic"
+        question=args.question,
+        url=args.url,
+        chunking_algorithm=args.chunking
     )
-    # result = do_rag(
-    #     question="What are the health benefits of physical activity?",
-    #     url="https://www.cdc.gov/physical-activity-basics/benefits/?CDC_AAref_Val=https://www.cdc.gov/physicalactivity/basics/pa-health/index.html",
-    # )
