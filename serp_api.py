@@ -7,10 +7,6 @@ examples = [
     {"URL": "https://www.cdc.gov/physical-activity-basics/benefits/?CDC_AAref_Val=https://www.cdc.gov/physicalactivity/basics/pa-health/index.html", "Question": "What are the health benefits of physical activity?"},
 ]
 
-
-import requests
-from bs4 import BeautifulSoup
-
 def get_content_from_url(url="https://en.wikipedia.org/wiki/ASAP_Rocky"):
     response = requests.get(url)
     html_content = response.text
