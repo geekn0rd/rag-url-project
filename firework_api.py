@@ -1,3 +1,4 @@
+import logging
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -5,28 +6,34 @@ from dotenv import load_dotenv
 CHAT_MODEL_NAME = "accounts/fireworks/models/llama-v3p1-8b-instruct"
 EMBED_MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5"
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 def get_openai_client():
     load_dotenv()
     try:
         openai_client = OpenAI(
-        api_key=os.environ.get("FIREWORKS_API_KEY"),
-        base_url=os.environ.get("FIREWORKS_API_BASE"),
+            api_key=os.environ.get("FIREWORKS_API_KEY"),
+            base_url=os.environ.get("FIREWORKS_API_BASE"),
         )
-
+        return openai_client
     except Exception as e:
-        print(f"An error occurred: {e}")
-    
-    return openai_client
+        logger.error(f"An error occurred while creating OpenAI client: {e}")
+        raise
 
 def get_openai_embedding(openai_client, text):
-    response = openai_client.embeddings.create(
-        model=EMBED_MODEL_NAME,
-        input=text
+    try:
+        response = openai_client.embeddings.create(
+            model=EMBED_MODEL_NAME,
+            input=text
         )
-    embedding = response.data[0].embedding
-    print("==== Generated an embedding... ====")
-    return embedding
-
+        embedding = response.data[0].embedding
+        logger.debug("Generated an embedding")
+        return embedding
+    except Exception as e:
+        logger.error(f"An error occurred while generating embedding: {e}")
+        raise
 
 def generate_response(openai_client, question, relevant_chunks):
     context = "\n\n".join(relevant_chunks)
@@ -37,19 +44,22 @@ def generate_response(openai_client, question, relevant_chunks):
         "\n\nContext:\n" + context + "\n\nQuestion:\n" + question
     )
 
-    response = openai_client.chat.completions.create(
-        model=CHAT_MODEL_NAME,
-        messages=[
-            {
-                "role": "system",
-                "content": prompt,
-            },
-            {
-                "role": "user",
-                "content": question,
-            },
-        ],
-    )
-
-    answer = response.choices[0].message.content
-    return answer
+    try:
+        response = openai_client.chat.completions.create(
+            model=CHAT_MODEL_NAME,
+            messages=[
+                {
+                    "role": "system",
+                    "content": prompt,
+                },
+                {
+                    "role": "user",
+                    "content": question,
+                },
+            ],
+        )
+        answer = response.choices[0].message.content
+        return answer
+    except Exception as e:
+        logger.error(f"An error occurred while generating response: {e}")
+        raise
