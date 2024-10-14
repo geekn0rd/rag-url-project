@@ -17,7 +17,7 @@ This project implements a Retrieval-Augmented Generation (RAG) system for answer
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/rag-url-project.git
+   git clone https://github.com/geekn0rd/rag-url-project.git
    cd rag-url-project
    ```
 
