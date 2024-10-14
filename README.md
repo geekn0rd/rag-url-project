@@ -37,3 +37,20 @@ This project implements a Retrieval-Augmented Generation (RAG) system for answer
 ## 🚀 Usage
 
 To use the RAG system, run the `rag_tool.py` script with the following parameters:
+
+```
+python rag_tool.py --url <URL> --question <QUESTION>
+```
+
+Replace `<URL>` with the URL of the page you want to query and `<QUESTION>` with the question you want to ask.
+
+## 🧪 Testing
+
+To run the testing suite, execute:
+
+```
+python testing_suite.py
+```
+
+This will evaluate the performance of each chunking algorithm and select the optimal one based on a weighted score. 
+
